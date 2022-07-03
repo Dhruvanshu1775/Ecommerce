@@ -1,0 +1,93 @@
+{% extends 'sample.html' %}
+{% block content %}
+{% load static %}
+<!-- Start Banner Area -->
+<section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1>Order Tracking</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="category.html">Fashon Category</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Banner Area -->
+
+<!--================Tracking Box Area =================-->
+<section class="tracking_box_area section_gap">
+    <div class="container">
+        <div class="tracking_box_inner">
+            <p>To track your order please enter your Order ID in the box below and press the "Track" button. This
+                was given to you on your receipt and in the confirmation email you should have received.</p>
+            <form class="row tracking_form" action="{% url 'product:tracking' %}" method="post" novalidate="novalidate">
+                {% csrf_token %}
+                <div class="col-md-12 form-group">
+                    <input type="text" class="form-control" id="order" name="order" placeholder="Enter 8 Digit of Order Id" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Order ID'">
+                </div>
+                <!-- <div class="col-md-12 form-group">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Billing Email Address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Billing Email Address'">
+                </div> -->
+                <div class="col-md-12 form-group">
+                    <button type="submit" value="submit" class="primary-btn">Track Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+<!--================End Tracking Box Area =================-->
+{% for odetail in odetails %}
+<div class="container">
+    <article class="card">
+        <header class="card-header"> My Orders / Tracking </header>
+        <div class="card-body">
+            <h6>Order ID: {{odetail.order_id}}</h6>
+            <article class="card">
+                <div class="card-body row">
+                    <div class="col"> <strong>Shipping time:</strong> <br>{{odetail.track_key.time_stamp}} </div>
+                    <div class="col"> <strong>Shipping BY:</strong> <br> {{odetail.track_key.courier_key}}, | <i class="fa fa-phone"></i> +1598675986 </div>
+                    <div class="col"> <strong>Status:</strong> <br> In Transmit</div>
+                    <div class="col"> <strong>Tracking #:</strong> <br> {{odetail.track_key.number}} </div>
+                </div>
+            </article>
+            <div class="track">
+                <div class="step {% if odetail.track_key.is_dispatch %}active{% endif %}"> <span class="icon"> <i class="fa fa-check"></i> </span> <span class="text">Order Dispatch</span> </div>
+                <div class="step {% if odetail.track_key.is_shipped %}active {% endif %}"> <span class="icon"> <i class="fa fa-user"></i> </span> <span class="text"> Shipped </span> </div>
+                <div class="step {% if odetail.track_key.is_out_for_delivery %} active {% endif %} "> <span class="icon"> <i class="fa fa-truck"></i> </span> <span class="text"> Out For Delivery </span> </div>
+                <div class="step {% if odetail.track_key.is_delivered %} active {% endif %}"> <span class="icon"> <i class="fa fa-briefcase"></i> </span> <span class="text">Delivered</span> </div>
+            </div>
+            <hr>
+            <ul class="row">
+                <li class="col-md-4">
+                    <figure class="itemside mb-3">
+                        <div class="aside"><img src="{{odetail.product_key.product_pic.url}}" class="img-sm border"></div>
+                        <figcaption class="info align-self-center">
+                            <p class="title">{{odetail.product_key.product_name}} <br>Quantity: {{odetail.quantity}}</p> <span class="text-muted">Rs.{{odetail.total_price}}</span>
+                        </figcaption>
+                    </figure>
+                </li>
+            </ul>
+            <hr> <a href="{% url 'product:myorders' %}" class="btn btn-warning" data-abc="true"> <i class="fa fa-chevron-left"></i> Back to orders</a>
+        </div>
+    </article>
+</div>
+</section>
+<h1>My First Google Map</h1>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY&callback=myMap"></script>
+<div id="googleMap" style="width:100%;height:400px;"></div>
+
+<script>
+function myMap() {
+var mapProp= {
+  center:new google.maps.LatLng(51.508742,-0.120850),
+  zoom:5,
+};
+var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+}
+</script>
+
+{% endfor %}
+{% endblock %}
